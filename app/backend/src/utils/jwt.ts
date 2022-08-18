@@ -13,7 +13,7 @@ class Jwt {
     this.secret = secretJwt || 'dfadfad';
   }
 
-  async encrypt(text: object): Promise<string> {
+  encrypt(text: object): string {
     return sign(text, this.secret);
   }
 
