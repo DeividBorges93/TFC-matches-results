@@ -6,14 +6,14 @@ const loginSchemas: ObjectSchema = Joi.object({
     .string()
     .required()
     .messages({
-      'any.required': '400|"email" is not allowed to be empty',
+      'string.empty': '400|All fields must be filled',
     }),
   password: Joi
     .string()
     .min(7)
     .required()
     .messages({
-      'any.required': '400|"password" is not allowed to be empty',
+      'string.empty': '400|All fields must be filled',
     }),
 });
 
