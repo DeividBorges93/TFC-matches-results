@@ -1,18 +1,31 @@
-import { Request, Response } from 'express';
-import ILoginService from '../interfaces/ILoginService';
-import IUser from '../interfaces/IUser';
-import Jwt from '../utils/jwt';
+import { NextFunction, Request, Response } from 'express';
+import LoginService from '../services/login';
 
 export default class LoginController {
-  constructor(private loginService: ILoginService<IUser>) {}
+  constructor(private loginService = new LoginService()) {}
 
-  public create = async (req: Request, res: Response) => {
-    const user = await this.loginService.login(req.body);
-    const jwt = new Jwt();
-    const token = jwt.encrypt({ email: user.email, id: user.id });
+  public login = async (req: Request, res: Response, next: NextFunction) => {
+    const { email, password } = req.body;
 
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (!email || !password) return res.status(400).json({ message: 'All fields must be filled' });
 
-    return res.status(200).json({ token });
+    const result = await this.loginService.login({ email, password });
+
+    if (typeof result !== 'string') {
+      next(result);
+      return;
+    }
+
+    return res.status(200).json({ token: result });
+  };
+
+  public validate = async (req: Request, res: Response) => {
+    const { authorization } = req.headers;
+
+    if (!authorization) return res.status(401).json({ message: 'Token does not exist' });
+
+    const result = await this.loginService.validate(authorization);
+
+    return res.status(200).json({ role: result });
   };
 }
