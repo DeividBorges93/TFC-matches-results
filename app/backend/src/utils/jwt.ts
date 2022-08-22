@@ -1,11 +1,13 @@
-import { sign, verify } from 'jsonwebtoken';
+import { JwtPayload, sign, SignOptions, verify } from 'jsonwebtoken';
 import 'dotenv/config';
 
 class Jwt {
   private secret: string;
+  private jwtConfig: SignOptions;
 
   constructor() {
     this.secretInit();
+    this.jwtConfig = { algorithm: 'HS256', expiresIn: '1d' };
   }
 
   private async secretInit(): Promise<void> {
@@ -13,12 +15,12 @@ class Jwt {
     this.secret = secretJwt || 'dfadfad';
   }
 
-  encrypt(text: object): string {
-    return sign(text, this.secret);
+  encrypt(text: JwtPayload): string {
+    return sign(text, this.secret, this.jwtConfig);
   }
 
-  async decrypt(encryptedText: string): Promise<string> {
-    return verify(encryptedText, this.secret) as string;
+  decrypt(encryptedText: string): JwtPayload {
+    return verify(encryptedText, this.secret) as JwtPayload;
   }
 }
 
