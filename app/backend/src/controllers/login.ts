@@ -19,12 +19,12 @@ export default class LoginController {
     return res.status(200).json({ token: result });
   };
 
-  public validate = async (req: Request, res: Response) => {
+  public validate = (req: Request, res: Response) => {
     const { authorization } = req.headers;
 
     if (!authorization) return res.status(401).json({ message: 'Token does not exist' });
 
-    const result = await this.loginService.validate(authorization);
+    const result = this.loginService.validate(authorization);
 
     return res.status(200).json({ role: result });
   };
