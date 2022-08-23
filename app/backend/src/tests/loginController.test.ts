@@ -165,5 +165,31 @@ describe('Login route', () => {
         expect(response.body.role).to.be.a('string');
       })
     })
+
+    describe('when token validation NOT is a sucess', () => {
+      beforeEach(() => {
+        const { stub } = sinon;
+  
+        stub(jwt, 'decrypt').returns(userMockData);
+      })
+
+      it('status HTTP 401 Unauthorized', async () => {
+        const response = await chai.request(app).get('/login/validate').set({
+          authorization: '',
+        });
+
+        expect(response.status).to.be.equal(401);
+      })
+
+      it('return a message "Token does not exist"', async () => {
+        const response = await chai.request(app).get('/login/validate').set({
+          authorization: '',
+        });
+
+        expect(response.body).to.be.haveOwnProperty('message');
+        expect(response.body.message).to.be.a('string');
+        expect(response.body.message).to.be.equal('Token does not exist');
+      })
+    })
   })
 })
