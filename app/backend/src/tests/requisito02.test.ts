@@ -57,4 +57,85 @@ describe('Login route', () => {
     });
   });
 
+  describe('When NOT receiving valid data in the request of the route "/login"', () => {
+    describe('if user does not exist', () => {
+      beforeEach(() => {
+        const { stub } = sinon;
+  
+        stub(User, 'findOne').resolves(userMockNull);
+      })
+  
+      it('status 401 Unauthorized', async () => {
+        const response = await chai.request(app).post('/login').send({
+          email: 'any-email',
+          password: 'any-hash',
+        });
+  
+        expect(response.status).to.be.equal(401);
+      });
+  
+      it('return a message "Incorrect email or password"', async () => {
+        const response = await chai.request(app).post('/login').send({
+          email: 'any-email',
+          password: 'any-hash',
+        });
+  
+        expect(response.body).to.be.haveOwnProperty('message');
+        expect(response.body.message).to.be.a('string');
+        expect(response.body.message).to.be.equal('Incorrect email or password');
+      })
+    })
+  
+    describe('if "email" does not exist', () => {
+      beforeEach(() => {
+        const { stub } = sinon;
+  
+        stub(User, 'findOne').resolves(userMockData as User);
+      })
+  
+      it('status 400 bad_request', async () => {
+        const response = await chai.request(app).post('/login').send({
+          password: 'secret_admin',
+        });
+        
+        expect(response.status).to.be.equal(400);
+      })
+  
+      it('return a message "All fields must be filled"', async () => {
+        const response = await chai.request(app).post('/login').send({
+          password: 'secret_admin',
+        });
+  
+        expect(response.body).to.be.haveOwnProperty('message');
+        expect(response.body.message).to.be.a('string');
+        expect(response.body.message).to.be.equal('All fields must be filled');
+      })
+    })
+  
+    describe('if "password" does not exist', () => {
+      beforeEach(() => {
+        const { stub } = sinon;
+  
+        stub(User, 'findOne').resolves(userMockData as User);
+      })
+  
+      it('status 400 bad_request', async () => {
+        const response = await chai.request(app).post('/login').send({
+          email: 'admin@admin.com',
+        });
+        
+        expect(response.status).to.be.equal(400);
+      })
+  
+      it('return a message "All fields must be filled"', async () => {
+        const response = await chai.request(app).post('/login').send({
+          email: 'admin@admin.com',
+        });
+  
+        expect(response.body).to.be.haveOwnProperty('message');
+        expect(response.body.message).to.be.a('string');
+        expect(response.body.message).to.be.equal('All fields must be filled');
+      })
+    })
+  })
 })
