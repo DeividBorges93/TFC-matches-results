@@ -140,4 +140,30 @@ describe('Login route', () => {
       })
     })
   })
+  describe('LoginController.validate', () => {
+    describe('when token validation is a success', () => {
+      beforeEach(() => {
+        const { stub } = sinon;
+  
+        stub(jwt, 'decrypt').returns(userMockData);
+      })
+  
+      it('status HTTP 200 OK', async () => {
+        const response = await chai.request(app).get('/login/validate').set({
+          authorization: tokenMock,
+        });
+  
+        expect(response.status).to.be.equal(200);
+      })
+
+      it('return a "role" OK', async () => {
+        const response = await chai.request(app).get('/login/validate').set({
+          authorization: tokenMock,
+        });
+
+        expect(response.body).to.be.haveOwnProperty('role');
+        expect(response.body.role).to.be.a('string');
+      })
+    })
+  })
 })
