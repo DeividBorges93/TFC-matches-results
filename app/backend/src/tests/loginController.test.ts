@@ -23,9 +23,7 @@ const userMockData = {
 
 const userMockNull = null;
 
-const tokenMock = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2NjEyMDU3NDgsImV4cCI6MTY2MTI5MjE0OH0._cNv1Bti3_xFaWrsmvSwggMHbWUVaqz6XX-xEjI7kvc"
-
-describe('Login route', () => {
+describe('LoginController.login', () => {
   afterEach(() => {
     sinon.restore();
   });
