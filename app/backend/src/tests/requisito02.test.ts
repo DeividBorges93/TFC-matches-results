@@ -6,9 +6,6 @@ import chaiHttp = require('chai-http');
 import User from '../database/models/user';
 import { app } from '../app';
 import Jwt from '../utils/jwt';
-import * as bcrypt from 'bcryptjs';
-
-import { Response } from 'superagent';
 
 chai.use(chaiHttp);
 
@@ -24,6 +21,7 @@ const userMockData = {
   // senha: secret_admin
 };
 
+const userMockNull = null;
 
 const tokenMock = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsImlkIjoxLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2NjEyMDU3NDgsImV4cCI6MTY2MTI5MjE0OH0._cNv1Bti3_xFaWrsmvSwggMHbWUVaqz6XX-xEjI7kvc"
 
@@ -37,8 +35,6 @@ describe('Login route', () => {
       const { stub } = sinon;
 
       stub(User, 'findOne').resolves(userMockData as User);
-      stub(bcrypt, 'compareSync').resolves(true);
-      stub(jwt, 'encrypt').resolves(tokenMock);
     })
 
     it('status HTTP 200 OK', async () => {
