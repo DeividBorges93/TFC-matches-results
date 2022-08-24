@@ -4,7 +4,7 @@ import TeamService from '../services/teams';
 export default class TeamController {
   constructor(private teamService = new TeamService()) {}
 
-  public findAll = async (req: Request, res: Response) => {
+  public findAll = async (_req: Request, res: Response) => {
     const teams = await this.teamService.findAll();
 
     return res.status(200).json(teams);
