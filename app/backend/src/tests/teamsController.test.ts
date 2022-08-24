@@ -82,3 +82,53 @@ const teamMock = {
   "teamName": "Avaí/Kindermann"
 }
 
+describe('Teams route', () => {
+  afterEach(() => {
+    sinon.restore();
+  })
+  describe('TeamsController.findAll', () => {
+    describe('When receiving valid data in the request of the route "/teams"', () => {
+      beforeEach(() => {
+        const { stub } = sinon;
+
+        stub(Team, 'findAll').resolves(teamsMock as Team[]);
+      })
+
+      it('status HTTP 200 OK', async () => {
+        const response = await chai.request(app).get('/teams');
+        
+        expect(response.status).to.be.equal(200);
+      });
+
+      it('return an array of teams OK', async () => {
+        const response = await chai.request(app).get('/teams');
+
+        expect(response.body).to.be.a('array');
+        expect(response.body).to.be.eql(teamsMock);
+      })
+    })
+  })
+
+  describe('TeamsController.findByPk', () => {
+    describe('When receiving valid data in the request of the route "/teams/:id"', () => {
+      beforeEach(() => {
+        const { stub } = sinon;
+
+        stub(Team, 'findByPk').resolves(teamMock as Team);
+      })
+
+      it('status HTTP 200 OK', async () => {
+        const response = await chai.request(app).get('/teams/1');
+        
+        expect(response.status).to.be.equal(200);
+      });
+
+      it('return an array of teams OK', async () => {
+        const response = await chai.request(app).get('/teams/1');
+
+        expect(response.body).to.be.a('object');
+        expect(response.body).to.be.eql(teamMock);
+      })
+    })
+  })
+})
