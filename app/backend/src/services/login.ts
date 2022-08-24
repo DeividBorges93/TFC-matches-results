@@ -19,7 +19,6 @@ export default class LoginService {
     const jwt = new Jwt();
 
     const { role } = jwt.decrypt(authorization);
-    console.log(role, 'role');
 
     return role;
   };
