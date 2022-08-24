@@ -2,7 +2,7 @@ import IHomeTeams from '../interfaces/IHomeTeams';
 import MatchModel from '../database/models/match';
 import TeamModel from '../database/models/team';
 import IMatch from '../interfaces/IMatch';
-import IReturnFindAndCountAllTeam from '../interfaces/IReturnFindAndCOuntAllTeam';
+import IReturnFindAndCountAllTeam from '../interfaces/IReturnFindAndCountAllTeam';
 
 export default class MatchService {
   private _matches: MatchModel[];
