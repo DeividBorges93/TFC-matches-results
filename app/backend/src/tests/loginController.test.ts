@@ -30,7 +30,6 @@ describe('Login route', () => {
     sinon.restore();
   });
   describe('LoginController.login', () => {
-    
     describe('When receiving valid data in the request of the route "/login"', () => {
       beforeEach(() => {
         const { stub } = sinon;
