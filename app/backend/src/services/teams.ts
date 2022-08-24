@@ -1,5 +1,5 @@
 import TeamModel from '../database/models/team';
-import ITeam from '../interfaces/Iteam';
+import ITeam from '../interfaces/ITeam';
 
 export default class TeamService {
   public findAll = async (): Promise<ITeam[]> => TeamModel.findAll();
