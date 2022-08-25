@@ -3,4 +3,5 @@ export default interface IMatch {
   awayTeam: number;
   homeTeamGoals: number;
   awayTeamGoals: number;
+  code?: number;
 }
