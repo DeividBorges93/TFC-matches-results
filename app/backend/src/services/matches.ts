@@ -47,4 +47,18 @@ export default class MatchService {
 
     return this._teams.count;
   };
+
+  public create = async (newMatch: IMatch) => {
+    const { homeTeam, awayTeam, homeTeamGoals, awayTeamGoals } = newMatch;
+
+    this._matcheCreated = await MatchModel.create({
+      homeTeam,
+      awayTeam,
+      homeTeamGoals,
+      awayTeamGoals,
+      inProgress: true,
+    });
+
+    return this._matcheCreated as IMatch;
+  };
 }
