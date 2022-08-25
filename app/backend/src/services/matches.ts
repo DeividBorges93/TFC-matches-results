@@ -5,7 +5,7 @@ import IMatch from '../interfaces/IMatch';
 import IReturnFindAndCountAllTeam from '../interfaces/IReturnFindAndCountAllTeam';
 
 export default class MatchService {
-  private _matches: MatchModel[];
+  private _matches: IMatch[];
   private _matcheCreated: IMatch;
   private _result: number;
   private _teams: IReturnFindAndCountAllTeam;
@@ -18,6 +18,18 @@ export default class MatchService {
         { model: TeamModel, as: 'teamHome', attributes: { exclude: ['id'] } },
         { model: TeamModel, as: 'teamAway', attributes: { exclude: ['id'] } },
       ],
+    });
+
+    return this._matches;
+  };
+
+  public isInProgress = async (inProgress: boolean) => {
+    this._matches = await MatchModel.findAll({
+      include: [
+        { model: TeamModel, as: 'teamHome', attributes: { exclude: ['id'] } },
+        { model: TeamModel, as: 'teamAway', attributes: { exclude: ['id'] } },
+      ],
+      where: { inProgress },
     });
 
     return this._matches;
