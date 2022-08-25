@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import MatchesService from '../services/matches';
 
 export default class MatchController {
@@ -16,5 +16,24 @@ export default class MatchController {
     }
 
     return res.status(200).json(matches);
+  };
+
+  public newMatch = async (req: Request, res: Response, next: NextFunction) => {
+    const createdMatch = await this.matchService.create(req.body, req.headers.authorization);
+
+    if (createdMatch.code) {
+      next(createdMatch);
+      return;
+    }
+
+    return res.status(201).json(createdMatch);
+  };
+
+  public gameOver = async (req:Request, res: Response) => {
+    const { id } = req.params;
+
+    await this.matchService.gameOver(Number(id));
+
+    return res.status(200).json({ message: 'Finished' });
   };
 }
