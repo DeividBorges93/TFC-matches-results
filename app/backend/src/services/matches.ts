@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import IHomeTeams from '../interfaces/IHomeTeams';
 import MatchModel from '../database/models/match';
 import TeamModel from '../database/models/team';
@@ -33,5 +34,17 @@ export default class MatchService {
     });
 
     return this._matches;
+  };
+
+  public findAndCountAll = async (teams: number[]) => {
+    this._teams = await TeamModel.findAndCountAll({
+      where: {
+        id: {
+          [Op.or]: [teams],
+        },
+      },
+    });
+
+    return this._teams.count;
   };
 }
