@@ -61,4 +61,10 @@ export default class MatchService {
 
     return this._matcheCreated as IMatch;
   };
+
+  public gameOver = async (id: number) => {
+    [this._result] = await MatchModel.update({ inProgress: false }, { where: { id } });
+
+    return this._result;
+  };
 }
