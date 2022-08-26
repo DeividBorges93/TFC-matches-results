@@ -5,6 +5,7 @@ import MatchModel from '../database/models/match';
 import TeamModel from '../database/models/team';
 import IMatch from '../interfaces/IMatch';
 import IReturnFindAndCountAllTeam from '../interfaces/IReturnFindAndCountAllTeam';
+import IGoals from '../interfaces/IGoals';
 
 export default class MatchService {
   private _matches: IMatch[];
@@ -68,6 +69,13 @@ export default class MatchService {
     });
 
     return this._matcheCreated as IMatch;
+  };
+
+  public changeScore = async (goals: IGoals) => {
+    const { id, homeTeamGoals, awayTeamGoals } = goals;
+    [this._result] = await MatchModel.update({ homeTeamGoals, awayTeamGoals }, { where: { id } });
+
+    return this._result;
   };
 
   public gameOver = async (id: number) => {
