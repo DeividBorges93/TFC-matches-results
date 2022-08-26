@@ -9,5 +9,6 @@ const router = Router();
 router.get('/matches', matchesController.findAll);
 router.post('/matches', authMiddleware, matchesController.newMatch);
 router.patch('/matches/:id/finish', matchesController.gameOver);
+router.patch('/matches/:id', matchesController.changeScore);
 
 export default router;
