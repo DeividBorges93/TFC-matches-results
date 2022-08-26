@@ -5,9 +5,6 @@ import MatchModel from '../database/models/match';
 import TeamModel from '../database/models/team';
 import IMatch from '../interfaces/IMatch';
 import IReturnFindAndCountAllTeam from '../interfaces/IReturnFindAndCountAllTeam';
-import Jwt from '../utils/jwt';
-
-const jwt = new Jwt();
 
 export default class MatchService {
   private _matches: IMatch[];
@@ -52,13 +49,9 @@ export default class MatchService {
     return this._teams.count;
   };
 
-  public create =
-  async (newMatch: IMatch, authorization: string | undefined): Promise<IMatch | IError> => {
+  public newMatch =
+  async (newMatch: IMatch): Promise<IMatch | IError> => {
     const { homeTeam, awayTeam, homeTeamGoals, awayTeamGoals } = newMatch;
-
-    if (!authorization) return { code: 401, message: 'Token does not exist!' };
-
-    jwt.decrypt(authorization);
 
     const message = 'It is not possible to create a match with two equal teams';
     if (homeTeam === awayTeam) return { code: 401, message };
