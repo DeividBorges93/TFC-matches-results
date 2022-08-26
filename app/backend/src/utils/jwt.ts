@@ -1,4 +1,5 @@
 import { JwtPayload, sign, SignOptions, verify } from 'jsonwebtoken';
+import InvalidToken from '../error/InvalidToken';
 import 'dotenv/config';
 
 class Jwt {
@@ -20,8 +21,20 @@ class Jwt {
   }
 
   decrypt(encryptedText: string): JwtPayload {
-    return verify(encryptedText, this.secret) as JwtPayload;
+    try {
+      return verify(encryptedText, this.secret) as JwtPayload;
+    } catch (error) {
+      throw new InvalidToken('Token must be a valid token');
+    }
   }
 }
 
 export default Jwt;
+
+// const decryptedToken = verify(authorization, this.secret) as JwtPayload;
+
+// if (decryptedToken.code) {
+//   throw new InvalidToken('Token must be a valid token');
+// }
+// return decryptedToken;
+// } TESTE SEM TRY/CATCH FUTURA REFATORAÇÃO
