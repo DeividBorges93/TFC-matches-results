@@ -19,14 +19,14 @@ export default class MatchController {
   };
 
   public newMatch = async (req: Request, res: Response, next: NextFunction) => {
-    const createdMatch = await this.matchService.create(req.body, req.headers.authorization);
+    const result = await this.matchService.newMatch(req.body);
 
-    if (createdMatch.code) {
-      next(createdMatch);
+    if (result.code) {
+      next(result);
       return;
     }
 
-    return res.status(201).json(createdMatch);
+    return res.status(201).json(result);
   };
 
   public gameOver = async (req:Request, res: Response) => {
