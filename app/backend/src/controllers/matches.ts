@@ -29,6 +29,15 @@ export default class MatchController {
     return res.status(201).json(result);
   };
 
+  public changeScore = async (req: Request, res: Response) => {
+    const id = Number(req.params.id);
+    const { homeTeamGoals, awayTeamGoals } = req.body;
+
+    await this.matchService.changeScore({ id, homeTeamGoals, awayTeamGoals });
+
+    return res.status(200).json({ message: 'score changed' });
+  };
+
   public gameOver = async (req:Request, res: Response) => {
     const { id } = req.params;
 
