@@ -45,4 +45,16 @@ export default class MatchController {
 
     return res.status(200).json({ message: 'Finished' });
   };
+
+  public homeTeamRankings = async (_req: Request, res: Response) => {
+    const matches = await this.matchService.homeTeamRankings();
+
+    return res.status(200).json(matches);
+  };
+
+  public awayTeamRankings = async (_req: Request, res: Response) => {
+    const matches = await this.matchService.awayTeamRankings();
+
+    return res.status(200).json(matches);
+  };
 }
