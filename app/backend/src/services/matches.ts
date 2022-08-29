@@ -1,19 +1,23 @@
 import { Op } from 'sequelize';
 import IError from '../interfaces/IError';
 import IHomeTeams from '../interfaces/IHomeTeams';
+import IAwayTeams from '../interfaces/IAwayTeams';
+import IMatch from '../interfaces/IMatch';
+import ITeam from '../interfaces/ITeam';
 import MatchModel from '../database/models/match';
 import TeamModel from '../database/models/team';
-import IMatch from '../interfaces/IMatch';
 import IReturnFindAndCountAllTeam from '../interfaces/IReturnFindAndCountAllTeam';
 import IGoals from '../interfaces/IGoals';
+import { homeTeamResults, awayTeamResults } from '../utils/calculateTeamsResults';
 
 export default class MatchService {
   private _matches: IMatch[];
   private _matcheCreated: IMatch;
   private _result: number;
   private _teams: IReturnFindAndCountAllTeam;
-  private _teamRankings: IHomeTeams[];
-  private _homeTeams: TeamModel[];
+  private _teamRankings: IHomeTeams[] | IAwayTeams[];
+  private _homeTeams: ITeam[];
+  private _awayTeams: ITeam[];
 
   public findAll = async () => {
     this._matches = await MatchModel.findAll({
@@ -82,5 +86,65 @@ export default class MatchService {
     [this._result] = await MatchModel.update({ inProgress: false }, { where: { id } });
 
     return this._result;
+  };
+
+  private getAllHomeTeams = async () => {
+    this._homeTeams = await TeamModel.findAll({
+      attributes: { exclude: ['id'] },
+      include: [{
+        model: MatchModel,
+        as: 'homeTeamMatches',
+        attributes: { exclude: ['id', 'homeTeam', 'awayTeam', 'inProgress'] },
+        where: { inProgress: false },
+      }],
+    });
+
+    return this._homeTeams.map((team) => ({
+      teamName: team.teamName,
+      homeTeamMatches: team.homeTeamMatches,
+    }));
+  };
+
+  public homeTeamRankings = async () => {
+    this._teamRankings = (await this.getAllHomeTeams()) as IHomeTeams[];
+
+    const result = this._teamRankings.map((team) => homeTeamResults(team));
+
+    return result
+      .sort((a, b) => b.goalsOwn - a.goalsOwn)
+      .sort((a, b) => b.goalsFavor - a.goalsFavor)
+      .sort((a, b) => b.goalsBalance - a.goalsBalance)
+      .sort((a, b) => b.totalVictories - a.totalVictories)
+      .sort((a, b) => b.totalPoints - a.totalPoints);
+  };
+
+  private getAllAwayTeams = async () => {
+    this._awayTeams = await TeamModel.findAll({
+      attributes: { exclude: ['id'] },
+      include: [{
+        model: MatchModel,
+        as: 'awayTeamMatches',
+        attributes: { exclude: ['id', 'homeTeam', 'awayTeam', 'inProgress'] },
+        where: { inProgress: false },
+      }],
+    });
+
+    return this._awayTeams.map((team) => ({
+      teamName: team.teamName,
+      awayTeamMatches: team.awayTeamMatches,
+    }));
+  };
+
+  public awayTeamRankings = async () => {
+    this._teamRankings = (await this.getAllAwayTeams()) as IAwayTeams[];
+
+    const result = this._teamRankings.map((team) => awayTeamResults(team));
+
+    return result
+      .sort((a, b) => b.goalsOwn - a.goalsOwn)
+      .sort((a, b) => b.goalsFavor - a.goalsFavor)
+      .sort((a, b) => b.goalsBalance - a.goalsBalance)
+      .sort((a, b) => b.totalVictories - a.totalVictories)
+      .sort((a, b) => b.totalPoints - a.totalPoints);
   };
 }
